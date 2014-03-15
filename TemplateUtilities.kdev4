@@ -1,0 +1,4 @@
+[Project]
+Name=TemplateUtilities
+Manager=KDevCMakeManager
+VersionControl=kdevgit
