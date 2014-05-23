@@ -44,8 +44,9 @@ decltype(std::declval<C>().reserve(std::declval<typename C::size_type>())),
 /// Has no effect otherwise.
 template <class C>
 typename std::enable_if < ! HasReserve<C>::value >::type
-reserve(C &, typename C::size_type)
+reserve(C &, typename C::size_type) noexcept
 {}
+
 template <class C>
 typename std::enable_if<HasReserve<C>::value>::type
 reserve(C & c, typename C::size_type n)
