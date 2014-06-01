@@ -20,7 +20,7 @@ include_directories(${${Target_Name}_PublicHeaders_Path})
 
 include(vedgTools/FindQtForTesting)
 if(ENABLE_TESTING)
-    include(vedgTools/EnableAutomoc)
+    include(vedgTools/EnableAutomocInSources)
     include_directories(${PATH_TO_CMAKE_MODULES}/include)
 
     include(vedgTools/LibraryAddTest)
