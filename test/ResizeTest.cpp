@@ -74,8 +74,9 @@ namespace
 template <class Container>
 void assertSize(const Container & container, const int size)
 {
-    const int resultingSize =
-        std::distance(std::begin(container), std::end(container));
+    const int resultingSize = static_cast<int>(
+                                  std::distance(std::begin(container),
+                                          std::end(container)));
     if (resultingSize != size) {
         CommonUtilities::Testing::printForType<Container>(true);
         std::cout << "resulting size after resizing to " << size
@@ -89,7 +90,14 @@ void assertValue(const Container & container, const int position,
                  const typename Container::value_type value)
 {
     const auto atPosition = * std::next(std::begin(container), position);
+# ifdef __clang__
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wfloat-equal"
+# endif
     if (atPosition != value) {
+# ifdef __clang__
+# pragma clang diagnostic pop
+# endif
         CommonUtilities::Testing::printForType<Container>(true);
         std::cout << "resizing resulted in incorrect value." << std::endl;
         CommonUtilities::Testing::print("position", position,
@@ -139,16 +147,19 @@ void TestCorrectValues<Container>::operator()() const
 {
     /// WARNING: be careful with changing numbers -
     /// test logic depends on values!
-    constexpr std::array<std::pair<int, short>, 5> config = {{
+    constexpr std::array<std::pair<int, typename Container::value_type>, 5>
+    config = {{
             { 222, 57 }, { 600, 2 }, { 10, 99 }, { 0, 5 }, { 5, 0 }
         }
     };
     Container container;
     assertSize(container, 0);
 
+    using SizeType = typename Container::size_type;
+
     int prevSize = 0;
     for (const auto & p : config) {
-        resize(container, p.first, p.second);
+        resize(container, static_cast<SizeType>(p.first), p.second);
         assertSize(container, p.first);
         if (p.first > prevSize)
             assertValue(container, p.first - 1, p.second);
@@ -158,10 +169,10 @@ void TestCorrectValues<Container>::operator()() const
     }
 
     const int a = prevSize + 11, b = prevSize + 2;
-    resize(container, a);
+    resize(container, static_cast<SizeType>(a));
     assertSize(container, a);
     assertValue(container, a - 1, 0);
-    resize(container, b);
+    resize(container, static_cast<SizeType>(b));
     assertSize(container, b);
     assertValue(container, b - 1, 0);
 }

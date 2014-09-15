@@ -34,7 +34,9 @@ template <class C>
 typename std::enable_if < ! HasResizeDefaultInit<C>::value >::type
 resize(C & c, typename C::size_type n)
 {
-    customResize<C>(c, n, [](C & c) { c.push_back(typename C::value_type()); });
+    customResize<C>(c, n, [](C & container) {
+        container.push_back(typename C::value_type());
+    });
 }
 template <class C>
 typename std::enable_if<HasResizeDefaultInit<C>::value>::type
@@ -50,7 +52,9 @@ template <class C>
 typename std::enable_if < ! HasResizeValueInit<C>::value >::type
 resize(C & c, typename C::size_type n, const typename C::value_type & value)
 {
-    customResize<C>(c, n, [& value](C & c) { c.push_back(value); });
+    customResize<C>(c, n, [& value](C & container) {
+        container.push_back(value);
+    });
 }
 template <class C>
 typename std::enable_if<HasResizeValueInit<C>::value>::type

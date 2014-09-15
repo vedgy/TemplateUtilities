@@ -25,6 +25,7 @@
 # include <QObject>
 # include <QTest>
 
+# include <cstdint>
 # include <cmath>
 # include <functional>
 # include <random>
@@ -36,18 +37,40 @@ namespace TemplateUtilities
 {
 namespace
 {
-std::mt19937 randomEngine(
-    std::chrono::system_clock::now().time_since_epoch().count());
+std::mt19937 & randomEngine()
+{
+    static std::mt19937 e(
+        static_cast<std::uint_fast32_t>(
+            std::chrono::system_clock::now().time_since_epoch().count()));
+    return e;
+}
+
+using UniformDistribution = std::uniform_int_distribution<int>;
 
 namespace TestAllStatic
 {
-std::uniform_int_distribution<int> reserveCount(0, 1000);
+inline UniformDistribution & reserveCount()
+{
+    static UniformDistribution u(0, 1000);
+    return u;
+}
+
 }
 
 namespace SpecializedTestStatic
 {
-std::uniform_int_distribution<int> startSize(0, 1000);
-std::uniform_int_distribution<int> multiplier(0, 10);
+inline UniformDistribution & startSize()
+{
+    static UniformDistribution u(0, 1000);
+    return u;
+}
+
+inline UniformDistribution & multiplier()
+{
+    static UniformDistribution u(0, 10);
+    return u;
+}
+
 }
 
 template <class Container>
@@ -100,12 +123,15 @@ template <class Container, class Init, class Capacity>
 void testCapacity(Init init, Capacity capacity)
 {
     typedef typename Container::size_type SizeType;
-    Container container = init(SpecializedTestStatic::startSize(randomEngine));
+    Container container = init(static_cast<SizeType>(
+                                   SpecializedTestStatic::startSize()(
+                                       randomEngine())));
     const Container copy = container;
 
     const SizeType newCapacity =
-        SizeType(capacity(container) *
-                 SpecializedTestStatic::multiplier(randomEngine));
+        capacity(container) *
+        static_cast<SizeType>(
+            SpecializedTestStatic::multiplier()(randomEngine()));
     reserve(container, newCapacity);
 
     equalContainers(container, copy);
@@ -123,7 +149,8 @@ template <class Container>
 void TestAll<Container>::operator()() const
 {
     Container container {}, copy = container;
-    reserve(container, TestAllStatic::reserveCount(randomEngine));
+    reserve(container, static_cast<typename Container::size_type>(
+                TestAllStatic::reserveCount()(randomEngine())));
     equalContainers(container, copy);
 }
 
@@ -132,7 +159,7 @@ void TestCapacity<Container>::operator()() const
 {
     testCapacity<Container>(
     [](typename Container::size_type size) {
-        return Container(size, typename Container::value_type{'\0'});
+        return Container(size, typename Container::value_type {'\0'});
     },
     std::bind(& Container::capacity, std::placeholders::_1));
 }
@@ -145,7 +172,8 @@ void TestMaxLoadFactor<Container>::operator()() const
         return Container(size);
     },
     [](const Container & c) {
-        return std::ceil(c.bucket_count() * c.max_load_factor());
+        return (typename Container::size_type)
+               std::ceil(c.bucket_count() * c.max_load_factor());
     });
 }
 
