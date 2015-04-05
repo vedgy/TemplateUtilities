@@ -1,6 +1,6 @@
 /*
  This file is part of vedgTools/TemplateUtilities.
- Copyright (C) 2014 Igor Kushnir <igorkuo AT Google mail>
+ Copyright (C) 2014, 2015 Igor Kushnir <igorkuo AT Google mail>
 
  vedgTools/TemplateUtilities is free software: you can redistribute it and/or
  modify it under the terms of the GNU General Public License as published by
@@ -74,9 +74,11 @@ namespace
 template <class Container>
 void assertSize(const Container & container, const int size)
 {
+    using std::begin;
+    using std::end;
     const int resultingSize = static_cast<int>(
-                                  std::distance(std::begin(container),
-                                          std::end(container)));
+                                  std::distance(begin(container),
+                                          end(container)));
     if (resultingSize != size) {
         CommonUtilities::Testing::printForType<Container>(true);
         std::cout << "resulting size after resizing to " << size
@@ -89,7 +91,8 @@ template <class Container>
 void assertValue(const Container & container, const int position,
                  const typename Container::value_type value)
 {
-    const auto atPosition = * std::next(std::begin(container), position);
+    using std::begin;
+    const auto atPosition = * std::next(begin(container), position);
 # ifdef __clang__
 # pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wfloat-equal"

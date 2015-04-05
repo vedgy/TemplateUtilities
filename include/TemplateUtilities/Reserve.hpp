@@ -1,6 +1,6 @@
 /*
  This file is part of vedgTools/TemplateUtilities.
- Copyright (C) 2014 Igor Kushnir <igorkuo AT Google mail>
+ Copyright (C) 2014, 2015 Igor Kushnir <igorkuo AT Google mail>
 
  vedgTools/TemplateUtilities is free software: you can redistribute it and/or
  modify it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ decltype(std::declval<C>().reserve(std::declval<typename C::size_type>())),
          : std::true_type
          {};
 
-/// @brief Calls c.reserve(n) if appropriate C::reserve() method exists.
+/// @brief Calls c.reserve(n) if an appropriate C::reserve() method exists.
 /// Has no effect otherwise.
 template <class C>
 typename std::enable_if < ! HasReserve<C>::value >::type

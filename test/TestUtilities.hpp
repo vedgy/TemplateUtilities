@@ -1,6 +1,6 @@
 /*
  This file is part of vedgTools/TemplateUtilities.
- Copyright (C) 2014 Igor Kushnir <igorkuo AT Google mail>
+ Copyright (C) 2014, 2015 Igor Kushnir <igorkuo AT Google mail>
 
  vedgTools/TemplateUtilities is free software: you can redistribute it and/or
  modify it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ namespace TemplateUtilities
 {
 namespace TestUtilities
 {
-template <template<class> class F, template<class> class Container>
+template < template<class> class F, template<class> class Container >
 void rotateNumericalElementTypes()
 {
     F<Container<int>>()();
@@ -64,7 +64,7 @@ void rotateNumericalElementTypes()
     F<Container<long double>>()();
 }
 
-template <template<class> class F, template<class> class Container>
+template < template<class> class F, template<class> class Container >
 void rotateElementTypes()
 {
     rotateNumericalElementTypes<F, Container>();
@@ -94,7 +94,7 @@ template <typename T> using TQMap = QMap<T, T>;
 template <typename T> using TQMultiMap = QMultiMap<double, T>;
 
 
-template <template<class> class F>
+template < template<class> class F >
 void rotateContainersWithCapacity()
 {
     rotateElementTypes<F, Vector>();
@@ -102,7 +102,7 @@ void rotateContainersWithCapacity()
     rotateElementTypes<F, QVector>();
 }
 
-template <template<class> class F>
+template < template<class> class F >
 void rotateContainersWithMaxLoadFactor()
 {
     rotateElementTypes<F, UnorderedSet>();
@@ -111,7 +111,7 @@ void rotateContainersWithMaxLoadFactor()
     rotateElementTypes<F, UnorederedMultimap>();
 }
 
-template <template<class> class F>
+template < template<class> class F >
 void rotateResizableContainers()
 {
     rotateContainersWithCapacity<F>();
@@ -124,7 +124,7 @@ void rotateResizableContainers()
     rotateElementTypes<F, QQueue>();
 }
 
-template <template<class> class F>
+template < template<class> class F >
 void rotateResizableDefaultInitContainers()
 {
     rotateResizableContainers<F>();
@@ -133,7 +133,7 @@ void rotateResizableDefaultInitContainers()
 # endif
 }
 
-template <template<class> class F>
+template < template<class> class F >
 void rotateNumericalResizableContainers()
 {
     rotateNumericalElementTypes<F, Vector>();
@@ -147,7 +147,7 @@ void rotateNumericalResizableContainers()
     rotateNumericalElementTypes<F, QQueue>();
 }
 
-template <template<class> class F>
+template < template<class> class F >
 void rotateAllContainers()
 {
     rotateResizableDefaultInitContainers<F>();
