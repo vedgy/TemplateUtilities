@@ -1,6 +1,6 @@
 /*
  This file is part of vedgTools/TemplateUtilities.
- Copyright (C) 2014 Igor Kushnir <igorkuo AT Google mail>
+ Copyright (C) 2014, 2015 Igor Kushnir <igorkuo AT Google mail>
 
  vedgTools/TemplateUtilities is free software: you can redistribute it and/or
  modify it under the terms of the GNU General Public License as published by
@@ -64,8 +64,8 @@ decltype(std::declval<C>().resize(std::declval<typename C::size_type>(),
 /// @brief Resizes collection c to size n by reserving and calling pushBack(c)
 /// n times OR, if c.size() >= n, by erasing items from the end of c.
 /// @tparam C Must have appropriate size(), erase() methods and iterators.
-template <class C, class PushBack>
-void customResize(C & c, typename C::size_type n, PushBack pushBack)
+template <class C, typename Function>
+void customResize(C & c, typename C::size_type n, Function pushBack)
 {
     typename C::size_type size = c.size();
     if (size < n) {
@@ -80,6 +80,6 @@ void customResize(C & c, typename C::size_type n, PushBack pushBack)
         c.erase(std::next(c.begin(), n), c.end());
 }
 
-}
+} // END namespace TemplateUtilities
 
 # endif // TEMPLATE_UTILITIES_RESIZE_INL_HPP
